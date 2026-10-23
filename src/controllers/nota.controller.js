@@ -6,6 +6,11 @@ export async function crearNota(req, res, next) {
     try {
         const datos = new CrearNotaDTO(req.body);
         const nota = await notaService.crear(datos);
+        res.cookie("ultimaCategoria", nota.categoria, {
+            httpOnly: true,
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60,
+        });
         res.status(201).json({ data: nota });
     } catch (error) {
         next(error);
@@ -37,5 +42,17 @@ export async function actualizarNota(req, res, next) {
         const nota = await notaService.actualizar(req.params.id, datos);
         if (!nota) return res.status(404).json({ error: "Nota no encontrada" });
         res.json({ data: nota });
-    } catch (error) { next(error); }
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function eliminarNota(req, res, next) {
+    try {
+        const nota = await notaService.eliminar(req.params.id);
+        if (!nota) return res.status(404).json({ error: "Nota no encontrada" });
+        res.status(204).send();
+    } catch (error) {
+        next(error);
+    }
 }

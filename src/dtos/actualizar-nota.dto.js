@@ -1,4 +1,4 @@
-export class ActualizarNota {
+export class ActualizarNotaDTO {
     constructor(body){
         if(body.titulo !== undefined){
             this.titulo = body.titulo.trim();
